@@ -39,7 +39,7 @@ export const bookingController = {
       // Auto-return before canceling
       await bookingService.autoReturn();
 
-      const cancelled = await bookingService.cancelBooking(bookingId, user);
+      const cancelled = await bookingService.cancelBooking(bookingId as string, user);
       res.json({ success: true, data: cancelled });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
@@ -53,7 +53,7 @@ export const bookingController = {
       // Auto-return before marking as returned
       await bookingService.autoReturn();
 
-      const updated = await bookingService.markAsReturned(bookingId);
+      const updated = await bookingService.markAsReturned(bookingId as string);
       res.json({ success: true, data: updated });
     } catch (err: any) {
       res.status(400).json({ error: err.message });

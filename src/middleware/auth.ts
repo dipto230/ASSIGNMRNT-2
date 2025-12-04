@@ -10,7 +10,7 @@ export const authMiddleware = (roles: string[] = []) => {
     const token = authHeader.split(" ")[1];
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+      const decoded = jwt.verify(token as string, process.env.JWT_SECRET as string);
       (req as any).user = decoded;
 
       if (roles.length > 0 && !roles.includes((decoded as any).role))

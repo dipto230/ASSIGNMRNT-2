@@ -29,7 +29,7 @@ export const vehicleController = {
 
   getVehicleById: async (req: Request, res: Response) => {
     try {
-      const vehicle = await vehicleService.getVehicleById(req.params.vehicleId);
+      const vehicle = await vehicleService.getVehicleById(req.params.vehicleId as string);
       if (!vehicle) return res.status(404).json({ error: "Vehicle not found" });
 
       res.json({ success: true, data: vehicle });
@@ -41,7 +41,7 @@ export const vehicleController = {
 
   updateVehicle: async (req: Request, res: Response) => {
     try {
-      const updated = await vehicleService.updateVehicle(req.params.vehicleId, req.body);
+      const updated = await vehicleService.updateVehicle(req.params.vehicleId as string, req.body);
       if (!updated) return res.status(404).json({ error: "Vehicle not found" });
 
       res.json({ success: true, data: updated });
@@ -64,7 +64,7 @@ export const vehicleController = {
       if (active.rows.length > 0)
         return res.status(400).json({ error: "Cannot delete vehicle with active bookings" });
 
-      const deleted = await vehicleService.deleteVehicle(vehicleId);
+      const deleted = await vehicleService.deleteVehicle(vehicleId as string);
       if (deleted.rows.length === 0) 
         return res.status(404).json({ error: "Vehicle not found" });
 

@@ -24,7 +24,7 @@ export const userController = {
       if (logged.role !== "admin" && role)
         return res.status(403).json({ error: "Only admin can update role" });
 
-      const updated = await userService.updateUser(userId, name, phone, role);
+      const updated = await userService.updateUser(userId as string, name, phone, role);
       if (!updated)
         return res.status(404).json({ error: "User not found" });
 
@@ -49,7 +49,7 @@ export const userController = {
           error: "Cannot delete user with active bookings"
         });
 
-      const result = await userService.deleteUser(userId);
+      const result = await userService.deleteUser(userId as string);
 
       if (result.rows.length === 0)
         return res.status(404).json({ error: "User not found" });
