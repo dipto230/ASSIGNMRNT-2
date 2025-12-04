@@ -1,5 +1,8 @@
 import express, { Request, Response } from "express";
 import { Pool } from "pg";
+import dotenv from "dotenv";
+import path from "path"
+dotenv.config({path: path.join(process.cwd(), '.env')})
 const app = express();
 const port = 5000;
 
@@ -51,6 +54,26 @@ const initDB = async () => {
 initDB();
 app.get("/", (req: Request, res: Response) => {
     res.send("Assignment 2 server is running after error");
+})
+
+app.post("/users", async (req: Request, res: Response) => {
+    const { name, email, password, phone, role } = req.body;
+    try {
+        const result = await pool.query(`INSERT INTO users (name, email,password, phone, role) VALUES($1, $2, $3, $4, $5) RETURNING *`, [name, email, password, phone, role]);
+        console.log(result)
+        res.status(201).json({
+            success: true,
+            message: "User Created successfully",
+            data: result.rows[0]
+            
+        })
+
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            message:err.message
+        })
+    }
 })
 
 app.post("/", (req: Request, res: Response) => {
