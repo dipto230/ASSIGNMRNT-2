@@ -2,18 +2,25 @@ import { Request, Response } from "express";
 import { authService } from "./auth.service";
 
 export const authController = {
-  signup: async (req: Request, res: Response) => {
-    try {
-      const { name, email, password, phone, role } = req.body;
+ signup: async (req: Request, res: Response) => {
+  try {
+    const { name, email, password, phone, role } = req.body;
 
-      const user = await authService.signup(name, email, password, phone, role);
+    const user = await authService.signup(name, email, password, phone, role);
 
-      res.status(201).json({ success: true, data: user });
+    
+    const { password: _, ...userWithoutPassword } = user;
 
-    } catch (err: any) {
-      res.status(500).json({ error: err.message });
-    }
-  },
+    res.status(201).json({
+      success: true,
+      data: userWithoutPassword
+    });
+
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+},
+
 
   signin: async (req: Request, res: Response) => {
     try {
