@@ -7,10 +7,15 @@ export const bookingController = {
       const { vehicle_id, rent_start_date, rent_end_date } = req.body;
       const user = (req as any).user;
 
-      // Auto-return before creating new booking
       await bookingService.autoReturn();
 
-      const booking = await bookingService.createBooking(user.id, vehicle_id, rent_start_date, rent_end_date);
+      const booking = await bookingService.createBooking(
+        user.id,
+        vehicle_id,
+        rent_start_date,
+        rent_end_date
+      );
+
       res.status(201).json({ success: true, data: booking });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
@@ -21,42 +26,28 @@ export const bookingController = {
     try {
       const user = (req as any).user;
 
-      // Auto-return before fetching bookings
       await bookingService.autoReturn();
 
       const bookings = await bookingService.getBookings(user);
+
       res.json({ success: true, data: bookings });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
     }
   },
 
-  cancelBooking: async (req: Request, res: Response) => {
+  updateBooking: async (req: Request, res: Response) => {
     try {
       const user = (req as any).user;
       const { bookingId } = req.params;
 
-      // Auto-return before canceling
       await bookingService.autoReturn();
 
-      const cancelled = await bookingService.cancelBooking(bookingId as string, user);
-      res.json({ success: true, data: cancelled });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  },
+      const updated = await bookingService.updateBooking(bookingId, user);
 
-  markAsReturned: async (req: Request, res: Response) => {
-    try {
-      const { bookingId } = req.params;
-
-      // Auto-return before marking as returned
-      await bookingService.autoReturn();
-
-      const updated = await bookingService.markAsReturned(bookingId as string);
       res.json({ success: true, data: updated });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
     }
-  }
+  },
 };

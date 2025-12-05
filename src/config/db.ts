@@ -10,7 +10,7 @@ export const pool = new Pool({
 
 export const initDB = async () => {
   await pool.query(`
-        CREATE TABLE IF NOT EXISTS users(
+        CREATE TABLE IF NOT EXISTS Users(
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         email VARCHAR(150) NOT NULL UNIQUE,
@@ -23,7 +23,7 @@ export const initDB = async () => {
   `);
 
   await pool.query(`
-        CREATE TABLE IF NOT EXISTS vehicles(
+        CREATE TABLE IF NOT EXISTS Vehicles(
         id SERIAL PRIMARY KEY,
         vehicle_name VARCHAR(100) NOT NULL,
         type VARCHAR(20) NOT NULL CHECK(type IN('car','bike','van','SUV')),
@@ -34,7 +34,7 @@ export const initDB = async () => {
   `);
 
   await pool.query(`
-        CREATE TABLE IF NOT EXISTS bookings(
+        CREATE TABLE IF NOT EXISTS Bookings(
         id SERIAL PRIMARY KEY,
         customer_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         vehicle_id INT NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
