@@ -1,6 +1,6 @@
 # 🚗 Vehicle Rental System
 
-**Live URL:** [https://assignment-2-ten-pi.vercel.app/](https://assignment-2-ten-pi.vercel.app/)
+**Live URL:** [https://assignment-2-ten-pi.vercel.app/](https://assignment-2-flax-alpha.vercel.app/)
 
 ---
 
