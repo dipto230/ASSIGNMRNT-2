@@ -1,14 +1,21 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
-import { pool } from "../../config/db";
 
 export const userController = {
-  getAllUsers: async (req: Request, res: Response) => {
+  getAllUsers: async (_req: Request, res: Response) => {
     try {
       const users = await userService.getAllUsers();
-      res.json({ success: true, data: users });
+
+      res.status(200).json({
+        success: true,
+        message: "Users retrieved successfully",
+        data: users
+      });
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        success: false,
+        message: err.message
+      });
     }
   },
 
@@ -16,48 +23,63 @@ export const userController = {
     try {
       const { userId } = req.params;
       const logged = (req as any).user;
-      const { name, phone, role } = req.body;
+      const { name, email, phone, role } = req.body;
 
-      if (logged.role !== "admin" && logged.id != userId)
-        return res.status(403).json({ error: "Forbidden" });
+      if (logged.role !== "admin" && logged.id !== Number(userId)) {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden"
+        });
+      }
 
-      if (logged.role !== "admin" && role)
-        return res.status(403).json({ error: "Only admin can update role" });
+      if (logged.role !== "admin" && role) {
+        return res.status(403).json({
+          success: false,
+          message: "Only admin can update role"
+        });
+      }
 
-      const updated = await userService.updateUser(userId as string, name, phone, role);
-      if (!updated)
-        return res.status(404).json({ error: "User not found" });
+      const updated = await userService.updateUser(
+        userId,
+        name,
+        email,
+        phone,
+        role
+      );
 
-      res.json({ success: true, data: updated });
+      if (!updated) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found"
+        });
+      }
 
+      res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        data: updated
+      });
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(400).json({
+        success: false,
+        message: err.message
+      });
     }
   },
 
   deleteUser: async (req: Request, res: Response) => {
     try {
-      const { userId } = req.params;
+      await userService.deleteUser(req.params.userId as string);
 
-      const activeBookings = await pool.query(
-        `SELECT * FROM bookings WHERE customer_id=$1 AND status='active'`,
-        [userId]
-      );
-
-      if (activeBookings.rows.length > 0)
-        return res.status(400).json({
-          error: "Cannot delete user with active bookings"
-        });
-
-      const result = await userService.deleteUser(userId as string);
-
-      if (result.rows.length === 0)
-        return res.status(404).json({ error: "User not found" });
-
-      res.json({ success: true, deleted: result.rows[0] });
-
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully"
+      });
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      res.status(400).json({
+        success: false,
+        message: err.message
+      });
     }
   }
 };
